@@ -1,0 +1,22 @@
+export { S3Adaptor } from './S3Adaptor'
+export { createLocalFileMiddleware } from './middleware/localFileMiddleware'
+export type {
+  S3AdaptorConfig,
+  LocalConfig,
+  BucketPolicy,
+  PutObjectParams,
+  GetObjectParams,
+  DeleteObjectParams,
+  ListObjectsParams,
+  GetSignedUrlParams,
+  GetObjectResult,
+  ListObjectsResult,
+} from './types'
+export {
+  S3AdaptorError,
+  NotFoundError,
+  TokenExpiredError,
+  InvalidTokenError,
+  InvalidConfigError,
+  AccessDeniedError,
+} from './errors'

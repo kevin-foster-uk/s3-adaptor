@@ -48,6 +48,7 @@ export interface GetSignedUrlParams {
   Bucket: string
   Key: string
   Expires?: number
+  ResponseContentDisposition?: string
 }
 
 export interface GetObjectResult {

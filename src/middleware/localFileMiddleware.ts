@@ -80,6 +80,8 @@ export function createLocalFileMiddleware(config: LocalConfig): RequestHandler {
       res.setHeader('Content-Type', meta?.ContentType ?? 'application/octet-stream')
       if (meta?.Size !== undefined) res.setHeader('Content-Length', meta.Size)
       if (meta?.ETag) res.setHeader('ETag', meta.ETag)
+      const disposition = req.query['disposition']
+      if (typeof disposition === 'string') res.setHeader('Content-Disposition', disposition)
 
       createReadStream(filePath).pipe(res)
     } catch (err) {

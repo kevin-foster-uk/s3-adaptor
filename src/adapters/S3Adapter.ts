@@ -104,7 +104,11 @@ export class S3Adapter extends BaseAdapter {
   }
 
   async getSignedUrl(params: GetSignedUrlParams): Promise<string> {
-    const cmd = new GetObjectCommand({ Bucket: params.Bucket, Key: params.Key })
+    const cmd = new GetObjectCommand({
+      Bucket: params.Bucket,
+      Key: params.Key,
+      ResponseContentDisposition: params.ResponseContentDisposition,
+    })
     return getSignedUrl(this.client, cmd, { expiresIn: params.Expires ?? 3600 })
   }
 }

@@ -191,7 +191,9 @@ export class LocalAdapter extends BaseAdapter {
 
     const exp = Math.floor(Date.now() / 1000) + (Expires ?? this.config.defaultExpiry ?? 3600)
     const token = this.signer.sign({ bucket: Bucket, key: Key, exp })
-    return dispositionParam ? `${base}?token=${token}&${dispositionParam}` : `${base}?token=${token}`
+    return dispositionParam
+      ? `${base}?token=${token}&${dispositionParam}`
+      : `${base}?token=${token}`
   }
 }
 

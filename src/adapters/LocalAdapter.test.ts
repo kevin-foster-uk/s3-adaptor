@@ -147,6 +147,46 @@ describe('LocalAdapter', () => {
     })
   })
 
+  describe('pruneEmptyDirs', () => {
+    it('removes empty subdirectories after files are deleted', async () => {
+      const vol = new Volume()
+      const { adapter } = makeAdapter(BASE_CONFIG, vol)
+      await adapter.putObject({ Bucket: 'private', Key: 'proj/survey/abc/file.png', Body: 'x' })
+      await adapter.deleteObject({ Bucket: 'private', Key: 'proj/survey/abc/file.png' })
+      await adapter.pruneEmptyDirs('private', 'proj')
+      const fs = makeFs(vol)
+      await expect(fs.promises.access('/storage/private/proj/survey/abc')).rejects.toThrow()
+      await expect(fs.promises.access('/storage/private/proj/survey')).rejects.toThrow()
+      await expect(fs.promises.access('/storage/private/proj')).rejects.toThrow()
+    })
+
+    it('keeps directories that still contain files', async () => {
+      const vol = new Volume()
+      const { adapter } = makeAdapter(BASE_CONFIG, vol)
+      await adapter.putObject({ Bucket: 'private', Key: 'proj/survey/abc/keep.png', Body: 'keep' })
+      await adapter.putObject({ Bucket: 'private', Key: 'proj/survey/abc/gone.png', Body: 'gone' })
+      await adapter.deleteObject({ Bucket: 'private', Key: 'proj/survey/abc/gone.png' })
+      await adapter.pruneEmptyDirs('private', 'proj')
+      const fs = makeFs(vol)
+      await expect(fs.promises.access('/storage/private/proj/survey/abc')).resolves.toBeUndefined()
+    })
+
+    it('does not remove the bucket root', async () => {
+      const vol = new Volume()
+      const { adapter } = makeAdapter(BASE_CONFIG, vol)
+      await adapter.putObject({ Bucket: 'private', Key: 'a.txt', Body: 'x' })
+      await adapter.deleteObject({ Bucket: 'private', Key: 'a.txt' })
+      await adapter.pruneEmptyDirs('private')
+      const fs = makeFs(vol)
+      await expect(fs.promises.access('/storage/private')).resolves.toBeUndefined()
+    })
+
+    it('no-ops when prefix directory does not exist', async () => {
+      const { adapter } = makeAdapter()
+      await expect(adapter.pruneEmptyDirs('private', 'nonexistent')).resolves.toBeUndefined()
+    })
+  })
+
   describe('security', () => {
     it('rejects path traversal in key', async () => {
       const { adapter } = makeAdapter()

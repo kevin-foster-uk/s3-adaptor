@@ -2,6 +2,7 @@ import { createHash } from 'crypto'
 import * as path from 'path'
 import * as realFs from 'fs'
 import { Readable } from 'stream'
+
 import { NotFoundError, S3AdaptorError } from '../errors'
 import { TokenSigner } from '../signing/TokenSigner'
 import type {
@@ -178,6 +179,20 @@ export class LocalAdapter extends BaseAdapter {
     return { Contents: contents, IsTruncated: isTruncated }
   }
 
+  async pruneEmptyDirs(bucket: string, prefix?: string): Promise<void> {
+    validateBucket(bucket)
+    const bucketDir = path.join(this.config.storagePath, bucket)
+    const targetDir = prefix ? path.join(bucketDir, prefix) : bucketDir
+
+    try {
+      await this.fs.promises.access(targetDir)
+    } catch {
+      return
+    }
+
+    await pruneEmptyDirsRecursive(targetDir, bucketDir, this.fs)
+  }
+
   async getSignedUrl(params: GetSignedUrlParams): Promise<string> {
     const { Bucket, Key, Expires, ResponseContentDisposition } = params
     const base = `${this.config.baseUrl}/${Bucket}/${Key}`
@@ -206,6 +221,32 @@ async function streamToBuffer(stream: NodeJS.ReadableStream): Promise<Buffer> {
     stream.on('end', () => resolve(Buffer.concat(chunks)))
     stream.on('error', reject)
   })
+}
+
+async function pruneEmptyDirsRecursive(dir: string, stopAt: string, fs: FsModule): Promise<void> {
+  let entries: import('fs').Dirent[]
+  try {
+    entries = await fs.promises.readdir(dir, { withFileTypes: true })
+  } catch {
+    return
+  }
+
+  for (const entry of entries) {
+    if (entry.isDirectory()) {
+      await pruneEmptyDirsRecursive(path.join(dir, entry.name), stopAt, fs)
+    }
+  }
+
+  if (dir === stopAt) return
+
+  const remaining = await fs.promises.readdir(dir)
+  if (remaining.length === 0) {
+    try {
+      await fs.promises.rmdir(dir)
+    } catch {
+      // non-empty or concurrent write — leave it
+    }
+  }
 }
 
 async function readdirRecursive(dir: string, fs: FsModule): Promise<string[]> {

@@ -14,4 +14,9 @@ export abstract class BaseAdapter {
   abstract deleteObject(params: DeleteObjectParams): Promise<void>
   abstract listObjects(params: ListObjectsParams): Promise<ListObjectsResult>
   abstract getSignedUrl(params: GetSignedUrlParams): Promise<string>
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  pruneEmptyDirs(_bucket: string, _prefix?: string): Promise<void> {
+    return Promise.resolve()
+  }
 }

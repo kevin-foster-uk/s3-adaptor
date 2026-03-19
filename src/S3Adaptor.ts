@@ -53,4 +53,8 @@ export class S3Adaptor {
   getSignedUrl(params: GetSignedUrlParams): Promise<string> {
     return this.adapter.getSignedUrl(params)
   }
+
+  pruneEmptyDirs(bucket: string, prefix?: string): Promise<void> {
+    return this.adapter.pruneEmptyDirs(bucket, prefix)
+  }
 }

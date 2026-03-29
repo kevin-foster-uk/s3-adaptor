@@ -17,7 +17,7 @@ We follow clean code principles to maintain a high-quality, maintainable codebas
 - **Testability First**: Design components and functions to be easily testable with clear inputs, outputs, and minimal dependencies
 - **Simplicity Over Complexity**: Balance clean code practices with pragmatism - prefer simple, straightforward solutions over over-engineered ones
 - **Avoid Over-Abstraction**: Don't create abstractions prematurely. Three similar instances can justify an abstraction, but one or two should remain concrete
-- **Dependency Injection**: Favor dependency injection for better testability and loose coupling
+- **Dependency Injection**: Favour dependency injection for better testability and loose coupling
 - **Pure Functions**: Prefer pure functions and immutability where practical (especially in the Survey model)
 - **Clear Intent**: Write self-documenting code with descriptive names; avoid unnecessary comments that restate what the code does
 - **No unused imports**: Remove any imports that are not referenced in the file

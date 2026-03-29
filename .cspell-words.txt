@@ -1,5 +1,14 @@
 adaptor
+atleast
+commitizen
+HMAC
+Liskov
+memfs
+nodothere
+nonexistent
 presigned
 presigner
-memfs
-commitizen
+scannable
+supersecretkey
+todelete
+vars

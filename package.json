@@ -5,7 +5,9 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
+    "typecheck": "pnpm -r typecheck",
     "test": "jest",
+    "compile": "pnpm format && pnpm build && pnpm typecheck && pnpm test",
     "test:watch": "jest --watch",
     "format": "prettier --write ./src",
     "lint": "eslint src --ext .ts",

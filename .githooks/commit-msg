@@ -1,0 +1,19 @@
+#!/bin/bash
+#
+# commit-msg hook: spell-check the commit message
+#
+
+COMMIT_MSG_FILE="$1"
+
+# Skip automated merge commits
+if [ -f ".git/MERGE_MSG" ]; then
+  exit 0
+fi
+
+if ! cat "$COMMIT_MSG_FILE" | npx cspell lint --config cspell.json --no-progress --no-summary stdin; then
+  echo ""
+  echo "Spell check failed. Fix typos above or add words to .cspell-words.txt"
+  echo "To bypass: git commit --no-verify"
+  echo ""
+  exit 1
+fi

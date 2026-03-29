@@ -1,0 +1,13 @@
+# <type>: <summary> (imperative, present tense, ≤72 chars)
+# |------72 chars-----------------------------------------------------|
+#
+# Types: feat | fix | refactor | chore | docs | test | ci | build
+#
+# Tip: use `pnpm commit` for an interactive guided prompt
+#
+# Body — explain WHY, not what (optional):
+#
+#
+# Footer — issue refs, breaking changes (optional):
+# Closes #<issue>
+# BREAKING CHANGE: <description>

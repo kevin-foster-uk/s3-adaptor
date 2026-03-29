@@ -1,0 +1,15 @@
+{
+  "$schema": "https://raw.githubusercontent.com/streetsidesoftware/cspell/main/packages/cspell-types/cspell.schema.json",
+  "version": "0.2",
+  "language": "en-GB",
+  "import": [
+    "@cspell/dict-typescript",
+    "@cspell/dict-node",
+    "@cspell/dict-npm"
+  ],
+  "dictionaries": ["project-words"],
+  "dictionaryDefinitions": [
+    { "name": "project-words", "path": "./.cspell-words.txt", "addWords": true }
+  ],
+  "minWordLength": 4
+}

@@ -1,6 +1,6 @@
 # s3-adaptor
 
-Unified adapter-pattern interface for AWS S3 and local filesystem storage. Switch backends via config — same API in dev and production. Includes HMAC-signed URL generation and Express middleware for local dev serving.
+Unified adapter-pattern interface for AWS S3 and local filesystem storage. Switch backends via config — same API in dev and production. Includes signed URL generation and Express middleware for local dev serving.
 
 ## Install
 

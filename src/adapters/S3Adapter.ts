@@ -3,12 +3,14 @@ import {
   GetObjectCommand,
   PutObjectCommand,
   DeleteObjectCommand,
+  CopyObjectCommand,
   ListObjectsV2Command,
   NoSuchKey,
 } from '@aws-sdk/client-s3'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 import { NotFoundError, S3AdaptorError } from '../errors'
 import type {
+  CopyObjectParams,
   DeleteObjectParams,
   GetObjectParams,
   GetObjectResult,
@@ -75,6 +77,23 @@ export class S3Adapter extends BaseAdapter {
   async deleteObject(params: DeleteObjectParams): Promise<void> {
     try {
       await this.client.send(new DeleteObjectCommand(params))
+    } catch (err) {
+      throw wrapError(err)
+    }
+  }
+
+  async copyObject(params: CopyObjectParams): Promise<void> {
+    try {
+      await this.client.send(
+        new CopyObjectCommand({
+          Bucket: params.Bucket,
+          Key: params.Key,
+          CopySource: params.CopySource,
+          ContentType: params.ContentType,
+          Metadata: params.Metadata,
+          MetadataDirective: params.Metadata ? 'REPLACE' : 'COPY',
+        }),
+      )
     } catch (err) {
       throw wrapError(err)
     }

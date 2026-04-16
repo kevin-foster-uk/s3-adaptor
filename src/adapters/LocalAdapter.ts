@@ -6,6 +6,7 @@ import { Readable } from 'stream'
 import { NotFoundError, S3AdaptorError } from '../errors'
 import { TokenSigner } from '../signing/TokenSigner'
 import type {
+  CopyObjectParams,
   DeleteObjectParams,
   GetObjectParams,
   GetObjectResult,
@@ -114,6 +115,36 @@ export class LocalAdapter extends BaseAdapter {
       Metadata: meta?.Metadata,
       ETag: meta?.ETag,
     }
+  }
+
+  async copyObject(params: CopyObjectParams): Promise<void> {
+    const { Bucket, Key, CopySource, ContentType, Metadata } = params
+    // CopySource format: '{sourceBucket}/{sourceKey}'
+    const slashIdx = CopySource.indexOf('/')
+    const srcBucket = CopySource.slice(0, slashIdx)
+    const srcKey = CopySource.slice(slashIdx + 1)
+
+    const srcPath = this.resolveFilePath(srcBucket, srcKey)
+    const dstPath = this.resolveFilePath(Bucket, Key)
+    await this.fs.promises.mkdir(path.dirname(dstPath), { recursive: true })
+    await this.fs.promises.copyFile(srcPath, dstPath)
+
+    let srcMeta: StoredMetadata | undefined
+    try {
+      const raw = await this.fs.promises.readFile(metaPath(srcPath), 'utf-8')
+      srcMeta = JSON.parse(raw) as StoredMetadata
+    } catch {
+      // sidecar optional
+    }
+
+    const newMeta: StoredMetadata = {
+      ContentType: ContentType ?? srcMeta?.ContentType,
+      Metadata: Metadata ?? srcMeta?.Metadata,
+      ETag: srcMeta?.ETag ?? '',
+      Size: srcMeta?.Size ?? 0,
+      LastModified: new Date().toISOString(),
+    }
+    await this.fs.promises.writeFile(metaPath(dstPath), JSON.stringify(newMeta))
   }
 
   async deleteObject(params: DeleteObjectParams): Promise<void> {

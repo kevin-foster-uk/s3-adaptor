@@ -3,6 +3,7 @@ import { LocalAdapter } from './adapters/LocalAdapter'
 import { S3Adapter } from './adapters/S3Adapter'
 import { BaseAdapter } from './adapters/BaseAdapter'
 import type {
+  CopyObjectParams,
   DeleteObjectParams,
   GetObjectParams,
   GetObjectResult,
@@ -44,6 +45,10 @@ export class S3Adaptor {
 
   deleteObject(params: DeleteObjectParams): Promise<void> {
     return this.adapter.deleteObject(params)
+  }
+
+  copyObject(params: CopyObjectParams): Promise<void> {
+    return this.adapter.copyObject(params)
   }
 
   listObjects(params: ListObjectsParams): Promise<ListObjectsResult> {

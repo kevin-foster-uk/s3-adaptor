@@ -7,6 +7,7 @@ export type {
   PutObjectParams,
   GetObjectParams,
   DeleteObjectParams,
+  CopyObjectParams,
   ListObjectsParams,
   GetSignedUrlParams,
   GetObjectResult,

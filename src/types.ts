@@ -44,6 +44,14 @@ export interface ListObjectsParams {
   MaxKeys?: number
 }
 
+export interface CopyObjectParams {
+  Bucket: string
+  Key: string
+  CopySource: string // '{sourceBucket}/{sourceKey}'
+  ContentType?: string
+  Metadata?: Record<string, string>
+}
+
 export interface GetSignedUrlParams {
   Bucket: string
   Key: string

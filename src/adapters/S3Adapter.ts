@@ -25,6 +25,7 @@ interface S3Config {
   region: string
   credentials?: { accessKeyId: string; secretAccessKey: string }
   endpoint?: string
+  forcePathStyle?: boolean
 }
 
 export class S3Adapter extends BaseAdapter {
@@ -36,6 +37,8 @@ export class S3Adapter extends BaseAdapter {
       region: config.region,
       credentials: config.credentials,
       endpoint: config.endpoint,
+      forcePathStyle: config.forcePathStyle,
+      requestChecksumCalculation: 'WHEN_REQUIRED',
     })
   }
 
@@ -123,12 +126,21 @@ export class S3Adapter extends BaseAdapter {
   }
 
   async getSignedUrl(params: GetSignedUrlParams): Promise<string> {
+    const expiresIn = params.Expires ?? 3600
+    if (params.operation === 'put') {
+      const cmd = new PutObjectCommand({
+        Bucket: params.Bucket,
+        Key: params.Key,
+        ContentType: params.ContentType,
+      })
+      return getSignedUrl(this.client, cmd, { expiresIn })
+    }
     const cmd = new GetObjectCommand({
       Bucket: params.Bucket,
       Key: params.Key,
       ResponseContentDisposition: params.ResponseContentDisposition,
     })
-    return getSignedUrl(this.client, cmd, { expiresIn: params.Expires ?? 3600 })
+    return getSignedUrl(this.client, cmd, { expiresIn })
   }
 }
 

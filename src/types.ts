@@ -16,6 +16,7 @@ export interface S3AdaptorConfig {
     region: string
     credentials?: { accessKeyId: string; secretAccessKey: string }
     endpoint?: string
+    forcePathStyle?: boolean
   }
   local?: LocalConfig
 }
@@ -57,6 +58,8 @@ export interface GetSignedUrlParams {
   Key: string
   Expires?: number
   ResponseContentDisposition?: string
+  operation?: 'get' | 'put'
+  ContentType?: string
 }
 
 export interface GetObjectResult {

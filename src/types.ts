@@ -29,6 +29,13 @@ export interface PutObjectParams {
   Metadata?: Record<string, string>
 }
 
+export interface UploadObjectParams {
+  Bucket: string
+  Key: string
+  Body: Buffer | NodeJS.ReadableStream | string
+  ContentType?: string
+}
+
 export interface GetObjectParams {
   Bucket: string
   Key: string

@@ -16,6 +16,7 @@ import type {
   LocalConfig,
   PutObjectParams,
   StoredMetadata,
+  UploadObjectParams,
 } from '../types'
 import { BaseAdapter } from './BaseAdapter'
 
@@ -58,6 +59,10 @@ export class LocalAdapter extends BaseAdapter {
     validateBucket(bucket)
     validateKey(key)
     return path.join(this.config.storagePath, bucket, key)
+  }
+
+  uploadObject(params: UploadObjectParams): Promise<void> {
+    return this.putObject(params)
   }
 
   async putObject(params: PutObjectParams): Promise<void> {

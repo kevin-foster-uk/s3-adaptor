@@ -7,6 +7,7 @@ import {
   ListObjectsV2Command,
   NoSuchKey,
 } from '@aws-sdk/client-s3'
+import { Upload } from '@aws-sdk/lib-storage'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 import { NotFoundError, S3AdaptorError } from '../errors'
 import type {
@@ -18,6 +19,7 @@ import type {
   ListObjectsParams,
   ListObjectsResult,
   PutObjectParams,
+  UploadObjectParams,
 } from '../types'
 import { BaseAdapter } from './BaseAdapter'
 
@@ -53,6 +55,23 @@ export class S3Adapter extends BaseAdapter {
           Metadata: params.Metadata,
         }),
       )
+    } catch (err) {
+      throw wrapError(err)
+    }
+  }
+
+  async uploadObject(params: UploadObjectParams): Promise<void> {
+    try {
+      const upload = new Upload({
+        client: this.client,
+        params: {
+          Bucket: params.Bucket,
+          Key: params.Key,
+          Body: params.Body as never,
+          ContentType: params.ContentType,
+        },
+      })
+      await upload.done()
     } catch (err) {
       throw wrapError(err)
     }

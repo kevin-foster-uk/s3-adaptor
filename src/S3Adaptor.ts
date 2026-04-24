@@ -12,6 +12,7 @@ import type {
   ListObjectsResult,
   PutObjectParams,
   S3AdaptorConfig,
+  UploadObjectParams,
 } from './types'
 
 function validateConfig(config: S3AdaptorConfig): void {
@@ -37,6 +38,10 @@ export class S3Adaptor {
 
   putObject(params: PutObjectParams): Promise<void> {
     return this.adapter.putObject(params)
+  }
+
+  uploadObject(params: UploadObjectParams): Promise<void> {
+    return this.adapter.uploadObject(params)
   }
 
   getObject(params: GetObjectParams): Promise<GetObjectResult> {

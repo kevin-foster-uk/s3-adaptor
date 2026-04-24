@@ -5,6 +5,7 @@ export type {
   LocalConfig,
   BucketPolicy,
   PutObjectParams,
+  UploadObjectParams,
   GetObjectParams,
   DeleteObjectParams,
   CopyObjectParams,

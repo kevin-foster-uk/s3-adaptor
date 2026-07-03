@@ -15,7 +15,7 @@ jest.mock('@aws-sdk/s3-request-presigner', () => ({
   getSignedUrl: jest.fn().mockResolvedValue('https://s3.example.com/signed-url'),
 }))
 
-// eslint-disable-next-line @typescript-eslint/no-require-imports
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const { __mockSend } = require('@aws-sdk/client-s3') as { __mockSend: jest.Mock }
 
 describe('S3Adapter', () => {

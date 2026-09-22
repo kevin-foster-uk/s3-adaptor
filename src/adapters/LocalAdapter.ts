@@ -232,19 +232,27 @@ export class LocalAdapter extends BaseAdapter {
   async getSignedUrl(params: GetSignedUrlParams): Promise<string> {
     const { Bucket, Key, Expires, ResponseContentDisposition } = params
     const base = `${this.config.baseUrl}/${Bucket}/${Key}`
-    const dispositionParam = ResponseContentDisposition
-      ? `disposition=${encodeURIComponent(ResponseContentDisposition)}`
-      : null
 
     if (this.isPublicBucket(Bucket)) {
+      // Public buckets have no token to bind a disposition into - anyone can
+      // already request any key in a public bucket under any disposition,
+      // signed or not, so this remains a bare query param.
+      const dispositionParam = ResponseContentDisposition
+        ? `disposition=${encodeURIComponent(ResponseContentDisposition)}`
+        : null
       return dispositionParam ? `${base}?${dispositionParam}` : base
     }
 
     const exp = Math.floor(Date.now() / 1000) + (Expires ?? this.config.defaultExpiry ?? 3600)
-    const token = this.signer.sign({ bucket: Bucket, key: Key, exp })
-    return dispositionParam
-      ? `${base}?token=${token}&${dispositionParam}`
-      : `${base}?token=${token}`
+    // Bind the disposition into the signature itself, so it can't be changed
+    // by editing the query string after the URL is issued.
+    const token = this.signer.sign({
+      bucket: Bucket,
+      key: Key,
+      exp,
+      disposition: ResponseContentDisposition,
+    })
+    return `${base}?token=${token}`
   }
 }
 

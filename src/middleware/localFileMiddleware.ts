@@ -61,11 +61,22 @@ export function createLocalFileMiddleware(config: LocalConfig): RequestHandler {
 
       const isPublic = config.buckets?.[bucket]?.public ?? false
 
+      // Signed (private-bucket) disposition comes from the verified token,
+      // never the raw query string - otherwise a caller could edit the
+      // query string to override the disposition the URL was signed with
+      // (e.g. turning a deliberately-forced "attachment" into "inline"),
+      // since the query string carries no signature of its own. Public
+      // buckets have no token to bind it to, so they keep the bare param.
+      let disposition: string | undefined
       if (!isPublic) {
         const token = req.query['token'] as string | undefined
         if (!token) throw new AccessDeniedError()
         const claims = signer.verify(token)
         if (claims.bucket !== bucket || claims.key !== key) throw new InvalidTokenError()
+        disposition = claims.disposition
+      } else {
+        const queryDisposition = req.query['disposition']
+        disposition = typeof queryDisposition === 'string' ? queryDisposition : undefined
       }
 
       const filePath = resolveFilePath(config.storagePath, bucket, key)
@@ -80,8 +91,7 @@ export function createLocalFileMiddleware(config: LocalConfig): RequestHandler {
       res.setHeader('Content-Type', meta?.ContentType ?? 'application/octet-stream')
       if (meta?.Size !== undefined) res.setHeader('Content-Length', meta.Size)
       if (meta?.ETag) res.setHeader('ETag', meta.ETag)
-      const disposition = req.query['disposition']
-      if (typeof disposition === 'string') res.setHeader('Content-Disposition', disposition)
+      if (disposition) res.setHeader('Content-Disposition', disposition)
 
       createReadStream(filePath).pipe(res)
     } catch (err) {

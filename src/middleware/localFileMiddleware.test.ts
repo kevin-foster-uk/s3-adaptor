@@ -100,10 +100,18 @@ function makeRes(): TestResponse {
   }
 }
 
-function makeReq(bucket: string, key: string, token?: string) {
+function makeReq(
+  bucket: string,
+  key: string,
+  token?: string,
+  extraQuery?: Record<string, string>,
+) {
   return {
     params: { bucket, '0': key } as Record<string, string>,
-    query: token ? ({ token } as Record<string, string>) : ({} as Record<string, string>),
+    query: {
+      ...(token ? { token } : {}),
+      ...extraQuery,
+    } as Record<string, string>,
   } as never
 }
 
@@ -130,10 +138,15 @@ async function writeTestFile(
   )
 }
 
-function makeSignedToken(bucket: string, key: string, expiresIn = 3600): string {
+function makeSignedToken(
+  bucket: string,
+  key: string,
+  expiresIn = 3600,
+  disposition?: string,
+): string {
   const signer = new TokenSigner(SECRET)
   const exp = Math.floor(Date.now() / 1000) + expiresIn
-  return signer.sign({ bucket, key, exp })
+  return signer.sign({ bucket, key, exp, disposition })
 }
 
 // Ignore unhandled stream errors from memfs resets
@@ -234,6 +247,43 @@ describe('localFileMiddleware', () => {
       handler(req, res as never, () => {})
       const result = await done
       expect(result.status).toBe(404)
+    })
+
+    it('serves the disposition the URL was signed with', async () => {
+      await writeTestFile(testVol, 'private', 'doc.pdf', 'pdf-data', 'application/pdf')
+      const token = makeSignedToken('private', 'doc.pdf', 3600, 'attachment; filename="doc.pdf"')
+      const handler = createLocalFileMiddleware(BASE_CONFIG)
+      const { res, done, headers, getStatus } = makeRes()
+      const req = makeReq('private', 'doc.pdf', token)
+      handler(req, res as never, () => {})
+      await done
+      expect(getStatus()).toBe(200)
+      expect(headers['Content-Disposition']).toBe('attachment; filename="doc.pdf"')
+    })
+
+    it('ignores a disposition query param tampered with after signing - the signed disposition wins', async () => {
+      await writeTestFile(testVol, 'private', 'doc.pdf', 'pdf-data', 'application/pdf')
+      const token = makeSignedToken('private', 'doc.pdf', 3600, 'attachment; filename="doc.pdf"')
+      const handler = createLocalFileMiddleware(BASE_CONFIG)
+      const { res, done, headers, getStatus } = makeRes()
+      const req = makeReq('private', 'doc.pdf', token, { disposition: 'inline' })
+      handler(req, res as never, () => {})
+      await done
+      expect(getStatus()).toBe(200)
+      expect(headers['Content-Disposition']).toBe('attachment; filename="doc.pdf"')
+      expect(headers['Content-Disposition']).not.toBe('inline')
+    })
+
+    it('sets no Content-Disposition header when the URL was signed without one, even if the query string supplies one', async () => {
+      await writeTestFile(testVol, 'private', 'doc.pdf', 'pdf-data', 'application/pdf')
+      const token = makeSignedToken('private', 'doc.pdf')
+      const handler = createLocalFileMiddleware(BASE_CONFIG)
+      const { res, done, headers, getStatus } = makeRes()
+      const req = makeReq('private', 'doc.pdf', token, { disposition: 'inline' })
+      handler(req, res as never, () => {})
+      await done
+      expect(getStatus()).toBe(200)
+      expect(headers['Content-Disposition']).toBeUndefined()
     })
   })
 })

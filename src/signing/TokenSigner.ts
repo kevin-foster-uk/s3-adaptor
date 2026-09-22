@@ -5,6 +5,11 @@ export interface TokenPayload {
   bucket: string
   key: string
   exp: number
+  // Bound into the signature so a caller can't override the response
+  // Content-Disposition the URL was signed with (e.g. downgrading a
+  // deliberately-forced "attachment" to "inline") by editing the query
+  // string, since that string never carries a signature of its own.
+  disposition?: string
 }
 
 export class TokenSigner {

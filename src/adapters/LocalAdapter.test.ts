@@ -145,6 +145,19 @@ describe('LocalAdapter', () => {
       expect(payload.exp).toBeGreaterThanOrEqual(before + 60)
       expect(payload.exp).toBeLessThanOrEqual(before + 61)
     })
+
+    it('binds ResponseContentDisposition into the signed token, not a bare query param', async () => {
+      const { adapter } = makeAdapter()
+      const url = await adapter.getSignedUrl({
+        Bucket: 'private',
+        Key: 'doc.pdf',
+        ResponseContentDisposition: 'attachment; filename="doc.pdf"',
+      })
+      expect(url).not.toContain('disposition=')
+      const token = url.split('token=')[1]
+      const payload = JSON.parse(Buffer.from(token.split('.')[0], 'base64url').toString())
+      expect(payload.disposition).toBe('attachment; filename="doc.pdf"')
+    })
   })
 
   describe('pruneEmptyDirs', () => {

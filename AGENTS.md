@@ -16,16 +16,23 @@
 - **Imports**: ES6 modules, prefer named imports
 - **Testing**: Colocated tests in `src/**/*.test.ts`
 
+### Writing Style
+
+No em-dashes anywhere in this repository: prose, docs, code comments, commit messages, PR
+descriptions. Use a comma, colon, semicolon, or a full stop and a new sentence instead. It's
+the single most common tell in AI-generated writing, so treat it as a hard rule, not a style
+preference.
+
 ### Releases
 
 Versioned independently via [Changesets](https://github.com/changesets/changesets)
-(`.changeset/`). Not published to npm — consumed by `veysur` purely via the pnpm
-`workspace:*` protocol — so "release" means a version bump, a `CHANGELOG.md` entry, a git
+(`.changeset/`). Not published to npm: consumed by `veysur` purely via the pnpm
+`workspace:*` protocol, so "release" means a version bump, a `CHANGELOG.md` entry, a git
 tag, and a GitHub release, not an `npm publish`.
 
-- When a PR changes behaviour, add a changeset: `pnpm changeset` — bump level
-  (patch/minor/major) and a changelog summary.
-- To cut a release: `./scripts/release.sh` — runs `pnpm changeset version`, commits, tags
+- When a PR changes behaviour, add a changeset: `pnpm changeset`, picking a bump level
+  (patch/minor/major) and writing a changelog summary.
+- To cut a release: `./scripts/release.sh`. Runs `pnpm changeset version`, commits, tags
   `s3-adaptor@<version>`, and pushes. Prints the `gh release create` command to run
   afterwards.
-- Manual, maintainer-triggered flow for now — no CI release automation yet.
+- Manual, maintainer-triggered flow for now: no CI release automation yet.

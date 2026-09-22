@@ -12,3 +12,4 @@ scannable
 supersecretkey
 todelete
 vars
+veysur

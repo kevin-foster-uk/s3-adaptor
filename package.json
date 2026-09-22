@@ -12,6 +12,7 @@
     "format": "prettier --write ./src",
     "lint": "eslint src --ext .ts",
     "commit": "cz",
+    "changeset": "changeset",
     "prepare": "git config core.hooksPath .githooks && git config commit.template .git-commit-template.txt"
   },
   "config": {
@@ -28,6 +29,7 @@
     "express": "^4.0.0 || ^5.0.0"
   },
   "devDependencies": {
+    "@changesets/cli": "^3.0.3",
     "@cspell/dict-node": "^5.0.9",
     "@cspell/dict-npm": "^5.2.38",
     "@cspell/dict-typescript": "^3.2.3",

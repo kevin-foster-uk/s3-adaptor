@@ -15,3 +15,17 @@
 - **Formatting**: Prettier with 2 spaces, no semicolons, single quotes, trailing commas
 - **Imports**: ES6 modules, prefer named imports
 - **Testing**: Colocated tests in `src/**/*.test.ts`
+
+### Releases
+
+Versioned independently via [Changesets](https://github.com/changesets/changesets)
+(`.changeset/`). Not published to npm — consumed by `veysur` purely via the pnpm
+`workspace:*` protocol — so "release" means a version bump, a `CHANGELOG.md` entry, a git
+tag, and a GitHub release, not an `npm publish`.
+
+- When a PR changes behaviour, add a changeset: `pnpm changeset` — bump level
+  (patch/minor/major) and a changelog summary.
+- To cut a release: `./scripts/release.sh` — runs `pnpm changeset version`, commits, tags
+  `s3-adaptor@<version>`, and pushes. Prints the `gh release create` command to run
+  afterwards.
+- Manual, maintainer-triggered flow for now — no CI release automation yet.

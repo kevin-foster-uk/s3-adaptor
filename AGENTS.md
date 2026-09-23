@@ -14,7 +14,13 @@
 
 - **Formatting**: Prettier with 2 spaces, no semicolons, single quotes, trailing commas
 - **Imports**: ES6 modules, prefer named imports
-- **Testing**: Colocated tests in `src/**/*.test.ts`
+- **Testing**: Colocated tests in `src/**/*.test.ts`. Jest is configured to fail a test on
+  any unexpected `console.error`/`console.warn` call, via `installConsoleGuard()` wired into
+  `setupFilesAfterEnv` (`src/test-utils/consoleGuard.ts`, `src/test-utils/setupTests.ts`).
+  Allow an expected call through with `allowConsole(pattern, fn)` (scoped to one test) or by
+  adding the pattern to `KNOWN_BENIGN_PATTERNS` in `consoleGuard.ts` (package-wide, for
+  warnings that are environmental/unfixable and will recur - comment why). Don't use a raw
+  `jest.spyOn(console, 'warn'|'error')`.
 
 ### Writing Style
 

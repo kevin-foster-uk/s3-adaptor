@@ -1,10 +1,27 @@
 {
   "name": "s3-adaptor",
   "version": "0.1.0",
+  "description": "Adapter-pattern interface for AWS S3 and local filesystem storage, with signed URLs and Express middleware",
   "license": "BSD-3-Clause",
+  "author": "Kevin Foster <kevin.foster.uk@gmail.com>",
+  "homepage": "https://github.com/kevin-foster-uk/s3-adaptor#readme",
+  "bugs": {
+    "url": "https://github.com/kevin-foster-uk/s3-adaptor/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kevin-foster-uk/s3-adaptor.git"
+  },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "files": [
+    "/dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
+    "prepublishOnly": "pnpm build && pnpm test",
     "build": "tsc",
     "typecheck": "pnpm -r typecheck",
     "test": "jest",

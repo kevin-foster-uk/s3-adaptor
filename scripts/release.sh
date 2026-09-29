@@ -39,5 +39,7 @@ git push --tags
 echo
 echo "Tagged and pushed: $TAG"
 echo
+echo "Then publish to npm with ./scripts/publish.sh (run it with --dry-run first)."
+echo
 echo "Next: cut a GitHub release from the CHANGELOG.md entry, e.g.:"
 echo "  gh release create '$TAG' --title '$TAG' --notes-file <(sed -n '/^## ${VERSION}\$/,/^## /p' CHANGELOG.md | sed '\$d')"

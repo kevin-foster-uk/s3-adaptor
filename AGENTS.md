@@ -32,13 +32,15 @@ preference.
 ### Releases
 
 Versioned independently via [Changesets](https://github.com/changesets/changesets)
-(`.changeset/`). Not published to npm: consumed by `veysur` purely via the pnpm
-`workspace:*` protocol, so "release" means a version bump, a `CHANGELOG.md` entry, a git
-tag, and a GitHub release, not an `npm publish`.
+(`.changeset/`). Published to npm as `s3-adaptor`; `veysur` consumes it via the pnpm
+`workspace:*` protocol from this submodule.
 
 - When a PR changes behaviour, add a changeset: `pnpm changeset`, picking a bump level
   (patch/minor/major) and writing a changelog summary.
 - To cut a release: `./scripts/release.sh`. Runs `pnpm changeset version`, commits, tags
   `s3-adaptor@<version>`, and pushes. Prints the `gh release create` command to run
   afterwards.
+- To publish to npm: `./scripts/publish.sh --dry-run` first (build, test, and list the
+  tarball), then `./scripts/publish.sh`. It refuses to publish a version already on the
+  registry. Needs `npm login` and an npm token (prompted, or set `NPM_TOKEN`).
 - Manual, maintainer-triggered flow for now: no CI release automation yet.

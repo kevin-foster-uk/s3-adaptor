@@ -1,6 +1,6 @@
 {
   "name": "s3-adaptor",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Adapter-pattern interface for AWS S3 and local filesystem storage, with signed URLs and Express middleware",
   "license": "BSD-3-Clause",
   "author": "Kevin Foster <kevin.foster.uk@gmail.com>",

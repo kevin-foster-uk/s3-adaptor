@@ -34,7 +34,7 @@
     "@cspell/dict-node": "^5.0.9",
     "@cspell/dict-npm": "^5.2.38",
     "@cspell/dict-typescript": "^3.2.3",
-    "@types/express": "^4.17.0",
+    "@types/express": "^5.0.6",
     "@types/jest": "^29.0.0",
     "@types/node": "^20.0.0",
     "@typescript-eslint/eslint-plugin": "^7.18.0",

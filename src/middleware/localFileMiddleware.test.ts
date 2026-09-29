@@ -100,12 +100,7 @@ function makeRes(): TestResponse {
   }
 }
 
-function makeReq(
-  bucket: string,
-  key: string,
-  token?: string,
-  extraQuery?: Record<string, string>,
-) {
+function makeReq(bucket: string, key: string, token?: string, extraQuery?: Record<string, string>) {
   return {
     params: { bucket, '0': key } as Record<string, string>,
     query: {
@@ -170,6 +165,16 @@ describe('localFileMiddleware', () => {
       await done
       expect(getStatus()).toBe(200)
       expect(headers['Content-Type']).toBe('image/png')
+    })
+
+    it('serves a nested key from an Express 5 wildcard array param', async () => {
+      await writeTestFile(testVol, 'public', 'a/b/img.png', 'image-data', 'image/png')
+      const handler = createLocalFileMiddleware(BASE_CONFIG)
+      const { res, done, getStatus } = makeRes()
+      const req = { params: { bucket: 'public', key: ['a', 'b', 'img.png'] }, query: {} } as never
+      handler(req, res as never, () => {})
+      await done
+      expect(getStatus()).toBe(200)
     })
 
     it('serves file even with invalid/malformed token (token ignored for public)', async () => {

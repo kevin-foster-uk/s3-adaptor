@@ -45,16 +45,27 @@ async function readMetadata(filePath: string): Promise<StoredMetadata | undefine
   }
 }
 
+type RouteParams = Record<string, string | string[] | undefined>
+
+/**
+ * Object key from the route wildcard. Express 5 mounts as `/:bucket/*key` and
+ * yields the path segments as an array; Express 4 mounts as `/:bucket/*` and
+ * yields the remainder as `params[0]`.
+ */
+function extractKey(params: RouteParams): string {
+  const wildcard = params['key'] ?? params['0'] ?? ''
+  return Array.isArray(wildcard) ? wildcard.join('/') : wildcard
+}
+
 export function createLocalFileMiddleware(config: LocalConfig): RequestHandler {
   const signer = new TokenSigner(config.secretKey)
 
   return async (req, res, next) => {
     try {
       const bucket = req.params['bucket']
-      // Express wildcard: params[0] when mounted as /:bucket/*
-      const key = (req.params as Record<string, string>)['0'] ?? req.params['key'] ?? ''
+      const key = extractKey(req.params)
 
-      if (!bucket) {
+      if (typeof bucket !== 'string' || !bucket) {
         res.status(400).json({ error: 'Missing bucket' })
         return
       }

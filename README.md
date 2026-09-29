@@ -64,8 +64,8 @@ const url = await storage.getSignedUrl({ Bucket, Key, Expires? })
 ```typescript
 import { createLocalFileMiddleware } from 's3-adaptor'
 
-// Mount as: GET /files/:bucket/*
-app.get('/files/:bucket/*', createLocalFileMiddleware(config.local))
+// Mount as: GET /files/:bucket/*key (Express 5) or /files/:bucket/* (Express 4)
+app.get('/files/:bucket/*key', createLocalFileMiddleware(config.local))
 ```
 
 Access control is based on bucket policy:

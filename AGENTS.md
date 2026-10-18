@@ -9,6 +9,7 @@
   - File-specific terms: use `// cspell:ignore term` inline or at the top of the file
   - Whole file (e.g. generated files): use `// cspell:disable` at the top
   - Genuinely project-wide terms only: add to `.cspell-words.txt`
+- **Feature workflow**: implement features on a feature branch and squash merge into `master` only once they are covered by automated tests and documented. Small fixes may go straight to `master`.
 
 ### Code Style
 

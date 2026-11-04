@@ -1,2 +1,16 @@
 packages:
   - '.'
+overrides:
+  '@babel/core@<7.29.6': '^7.29.6'
+  'baseline-browser-mapping@<2.11.0': '^2.11.0'
+  'body-parser@<2.4.0': '^2.4.0'
+  'browserslist@<4.28.7': '^4.28.7'
+  'fast-uri@<3.1.9': '^3.1.9'
+  'handlebars@<4.7.10': '^4.7.10'
+  'js-yaml@<3.15.2': '^3.15.2'
+  'launch-editor@<2.14.2': '^2.14.2'
+  'picomatch@<2.3.2': '^2.3.2'
+  'shell-quote@<1.11.0': '^1.11.0'
+  'tmp@<0.2.6': '>=0.2.6'
+  'qs@<6.16.1': '^6.16.1'
+  'smol-toml@<1.8.1': '^1.8.1'

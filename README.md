@@ -68,6 +68,8 @@ import { createLocalFileMiddleware } from 's3-adaptor'
 app.get('/files/:bucket/*key', createLocalFileMiddleware(config.local))
 ```
 
+For any other framework, use `createLocalFileHandler(config.local)`. It takes a request with `params` and `query`, and a response with `status(code).json()`, `header(name, value)` and `stream(readable)` (a datacapy `HttpResponse` fits). The key may be one string or an array of segments.
+
 Access control is based on bucket policy:
 - Public bucket: serves file without token
 - Protected bucket: requires `?token=<signed>` obtained from `getSignedUrl`

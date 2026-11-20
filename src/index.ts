@@ -1,5 +1,11 @@
 export { S3Adaptor } from './S3Adaptor'
 export { createLocalFileMiddleware } from './middleware/localFileMiddleware'
+export { createLocalFileHandler } from './middleware/localFileHandler'
+export type {
+  LocalFileHandler,
+  LocalFileRequest,
+  LocalFileResponse,
+} from './middleware/localFileHandler'
 export type {
   S3AdaptorConfig,
   LocalConfig,

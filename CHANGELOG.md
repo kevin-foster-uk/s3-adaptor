@@ -1,5 +1,11 @@
 # s3-adaptor
 
+## 0.3.0
+
+### Minor Changes
+
+- 30d681d: Add `createLocalFileHandler`, a framework-neutral handler for serving local-mode files over any HTTP framework (`LocalFileRequest`, `LocalFileResponse`). `createLocalFileMiddleware` is unchanged for Express users and now wraps it.
+
 ## 0.2.0
 
 ### Minor Changes

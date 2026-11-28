@@ -1,6 +1,6 @@
 # s3-adaptor
 
-Unified adapter-pattern interface for AWS S3 and local filesystem storage. Switch backends via config — same API in dev and production. Includes signed URL generation and Express middleware for local dev serving.
+Unified adapter-pattern interface for AWS S3 and local filesystem storage. Switch backends via config, same API in dev and production. Includes signed URL generation and Express middleware for local dev serving.
 
 ## Install
 
@@ -46,16 +46,16 @@ const storage = new S3Adaptor({
 // Upload
 await storage.putObject({ Bucket, Key, Body, ContentType?, Metadata? })
 
-// Download — returns { Body: ReadableStream, ContentType?, ContentLength?, ETag?, Metadata? }
+// Download, returns { Body: ReadableStream, ContentType?, ContentLength?, ETag?, Metadata? }
 const result = await storage.getObject({ Bucket, Key })
 
 // Delete
 await storage.deleteObject({ Bucket, Key })
 
-// List — returns { Contents: [{ Key, Size, LastModified, ETag? }], IsTruncated }
+// List, returns { Contents: [{ Key, Size, LastModified, ETag? }], IsTruncated }
 const list = await storage.listObjects({ Bucket, Prefix?, MaxKeys? })
 
-// Signed URL — public bucket → plain URL; protected → ?token=<signed> (local); S3 → pre-signed
+// Signed URL, public bucket → plain URL; protected → ?token=<signed> (local); S3 → pre-signed
 const url = await storage.getSignedUrl({ Bucket, Key, Expires? })
 ```
 
